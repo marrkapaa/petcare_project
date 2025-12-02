@@ -1,4 +1,4 @@
-Office Hours (example)
+Pet Care Project
 ===
 
 ---
@@ -6,7 +6,7 @@ Office Hours (example)
 Clone the repository:
 
 ```shell
-git clone https://github.com/gkoulis/DS-Lab-OfficeHours.git
+git clone https://github.com/marrkapaa/petcare_project.git
 ```
 
 ---
@@ -14,7 +14,7 @@ git clone https://github.com/gkoulis/DS-Lab-OfficeHours.git
 Run the example:
 
 ```shell
-cd DS-Lab-OfficeHours
+cd petcare_project
 ./mvnw spring-boot:run  # MacOS / Linux
 ./mvnw.cmd spring-boot:run  # Windows
 ```
