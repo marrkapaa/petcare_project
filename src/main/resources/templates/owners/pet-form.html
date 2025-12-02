@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <meta charset="UTF-8">
+    <title>Καταχώριση Κατοικιδίου</title>
+</head>
+<body>
+<h1>Καταχώριση Νέου Κατοικιδίου</h1>
+
+<div th:if="${errorMessage != null}" style="color: red;">
+    <p th:text="${errorMessage}">Μήνυμα Λάθους</p>
+</div>
+
+<form th:action="@{/owners/pets}" th:object="${pet}" method="post">
+
+    <div>
+        <label for="name">Όνομα:</label>
+        <input type="text" id="name" th:field="*{name}" required>
+    </div>
+
+    <div>
+        <label for="species">Είδος (π.χ. Σκύλος, Γάτα):</label>
+        <input type="text" id="species" th:field="*{species}" required>
+    </div>
+
+    <div>
+        <label for="breed">Ράτσα:</label>
+        <input type="text" id="breed" th:field="*{breed}">
+    </div>
+
+    <div>
+        <label for="age">Ηλικία (σε έτη):</label>
+        <input type="number" id="age" th:field="*{age}" min="0">
+    </div>
+
+    <button type="submit">Καταχώριση Pet</button>
+</form>
+
+<p><a th:href="@{/owners/pets}">Επιστροφή στη Λίστα Κατοικιδίων</a></p>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <meta charset="UTF-8">
+    <title>Τα Κατοικίδιά μου</title>
+</head>
+<body>
+<h1>Τα Κατοικίδιά μου</h1>
+
+<a th:href="@{/owners/pets/new}">+ Καταχώριση Νέου Pet</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Όνομα</th>
+        <th>Είδος</th>
+        <th>Ράτσα</th>
+        <th>Ηλικία</th>
+        <th>Διαχείριση</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pet : ${pets}">
+        <td th:text="${pet.name}">Όνομα Pet</td>
+        <td th:text="${pet.species}">Είδος</td>
+        <td th:text="${pet.breed}">Ράτσα</td>
+        <td th:text="${pet.age}">Ηλικία</td>
+        <td><a th:href="@{'/owners/appointments/new?petId=' + ${pet.id}}">Κλείσιμο Ραντεβού</a></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(pets)}">
+        <td colspan="5">Δεν έχετε καταχωρίσει κατοικίδια.</td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/}">Επιστροφή στην Αρχική</a></p>
+</body>
+</html>

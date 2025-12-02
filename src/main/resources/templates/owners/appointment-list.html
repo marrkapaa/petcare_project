@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <meta charset="UTF-8">
+    <title>Τα Ραντεβού μου</title>
+</head>
+<body>
+<h1>Τα Ραντεβού μου</h1>
+
+<a th:href="@{/owners/appointments/new}">+ Κλείσιμο Νέου Ραντεβού</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Κατοικίδιο</th>
+        <th>Κτηνίατρος</th>
+        <th>Ημερομηνία & Ώρα</th>
+        <th>Λόγος</th>
+        <th>Κατάσταση</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="app : ${appointments}">
+        <td th:text="${app.pet.name}">Όνομα Pet</td>
+        <td th:text="${app.veterinarian.username}">Όνομα Vet</td>
+        <td th:text="${#temporals.format(app.dateTime, 'dd-MM-yyyy HH:mm')}">DateTime</td>
+        <td th:text="${app.reason}">Reason</td>
+        <td th:text="${app.status}">Status</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(appointments)}">
+        <td colspan="5">Δεν υπάρχουν προγραμματισμένα ραντεβού.</td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/}">Επιστροφή στην Αρχική</a></p>
+</body>
+</html>

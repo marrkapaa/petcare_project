@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <meta charset="UTF-8">
+    <title>Καταχώριση Θεραπείας/Σημειώσεων</title>
+</head>
+<body>
+<h1>Καταχώριση Ιατρικού Αρχείου</h1>
+
+<div th:if="${errorMessage != null}" style="color: red;">
+    <p th:text="${errorMessage}">Μήνυμα Λάθους</p>
+</div>
+
+<form th:action="@{/vets/records}" th:object="${record}" method="post">
+
+    <input type="hidden" th:field="*{appointment.id}" th:value="${appointmentId}">
+
+    <h2>Ραντεβού ID: <span th:text="${appointmentId}"></span></h2>
+    <hr>
+
+    <div>
+        <label for="visitDate">Ημερομηνία Επίσκεψης:</label>
+        <input type="datetime-local" id="visitDate" th:field="*{visitDate}" required>
+    </div>
+
+    <div>
+        <label for="diagnosis">Διάγνωση:</label>
+        <textarea id="diagnosis" th:field="*{diagnosis}" required></textarea>
+    </div>
+
+    <div>
+        <label for="treatmentNotes">Σημειώσεις Θεραπείας:</label>
+        <textarea id="treatmentNotes" th:field="*{treatmentNotes}"></textarea>
+    </div>
+
+    <div>
+        <label for="vaccinesGiven">Εμβόλια που χορηγήθηκαν:</label>
+        <input type="text" id="vaccinesGiven" th:field="*{vaccinesGiven}">
+    </div>
+
+    <button type="submit">Ολοκλήρωση & Καταχώριση</button>
+</form>
+
+<p><a th:href="@{/vets/schedule}">Επιστροφή στο Πρόγραμμα</a></p>
+</body>
+</html>

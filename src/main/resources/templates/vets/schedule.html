@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <meta charset="UTF-8">
+    <title>Πρόγραμμα Κτηνιάτρου</title>
+</head>
+<body>
+<h1 th:text="'Πρόγραμμα: ' + ${vetName}">Πρόγραμμα Κτηνιάτρου</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Ώρα</th>
+        <th>Κατοικίδιο</th>
+        <th>Ιδιοκτήτης</th>
+        <th>Λόγος</th>
+        <th>Κατάσταση</th>
+        <th>Ενέργειες</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="app : ${appointments}">
+        <td th:text="${#temporals.format(app.dateTime, 'HH:mm dd/MM/yyyy')}">Ώρα</td>
+        <td th:text="${app.pet.name}">Όνομα Pet</td>
+        <td th:text="${app.pet.owner.username}">Όνομα Owner</td>
+        <td th:text="${app.reason}">Λόγος</td>
+        <td th:text="${app.status}">Status</td>
+
+        <td>
+            <a th:href="@{'/vets/records/new?appointmentId=' + ${app.id}}">
+                Καταχώριση Θεραπείας
+            </a>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(appointments)}">
+        <td colspan="6">Δεν υπάρχουν ραντεβού στο πρόγραμμά σας.</td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/}">Επιστροφή στην Αρχική</a></p>
+</body>
+</html>

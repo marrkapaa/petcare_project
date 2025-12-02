@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <meta charset="UTF-8">
+    <title>PetCare - Αρχική</title><style>
+    .container { max-width: 800px; margin-top: 50px; }
+    .role-section { border: 2px solid #ccc; padding: 20px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<div class="container text-center">
+    <header class="p-4">
+        <h1>Καλωσήρθατε στο PetCare System!</h1>
+
+        <p class="lead">Συνδεδεμένος ως: <strong sec:authentication="name"></strong></p>
+    </header>
+
+    <hr>
+
+    <!-- ΔΙΟΡΘΩΣΗ: Προσθήκη ROLE_ για συνέπεια με το Spring Security -->
+    <section class="role-section" sec:authorize="hasAuthority('ROLE_OWNER')">
+        <h2>Πίνακας Ιδιοκτήτη (OWNER)</h2>
+        <p>Ως ιδιοκτήτης, μπορείτε να διαχειριστείτε τα κατοικίδιά σας και τα ραντεβού σας.</p>
+        <ul class="list-unstyled">
+            <li><a th:href="@{/owners/pets}">Διαχείριση Κατοικιδίων</a></li>
+            <li><a th:href="@{/owners/appointments}">Διαχείριση Ραντεβού</a></li>
+        </ul>
+    </section>
+
+    <!-- ΔΙΟΡΘΩΣΗ: Προσθήκη ROLE_ για συνέπεια με το Spring Security -->
+    <section class="role-section" sec:authorize="hasAuthority('ROLE_VETERINARIAN')">
+        <h2>Πίνακας Κτηνιάτρου (VETERINARIAN)</h2>
+        <p>Ως κτηνίατρος, μπορείτε να διαχειριστείτε το πρόγραμμα και τα ιατρικά αρχεία.</p>
+        <ul class="list-unstyled">
+            <li><a th:href="@{/vets/schedule}">Προβολή Προγράμματος</a></li>
+            <li><a href="#">Καταχώριση Ιατρικού Αρχείου</a></li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="btn btn-danger">Αποσύνδεση</button>
+    </form>
+</div>
+
+</body>
+</html>
