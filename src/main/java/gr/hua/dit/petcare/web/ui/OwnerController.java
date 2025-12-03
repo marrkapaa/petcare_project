@@ -9,12 +9,12 @@ import gr.hua.dit.petcare.core.service.PetService;
 import gr.hua.dit.petcare.core.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails; // Σωστό Principal type
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Controller
 @RequestMapping("/owner")
@@ -30,17 +30,21 @@ public class OwnerController {
         this.appointmentService = appointmentService;
     }
 
-    // Βοηθητική μέθοδος για ανάκτηση του πλήρους User Entity από το Principal
-    private User getAuthenticatedUser(@AuthenticationPrincipal User principal) {
-        // Εδώ βασιζόμαστε στο ότι ο principal περιέχει τουλάχιστον το username/id
-        return userService.findUserById(principal.getId());
+    /**
+     * Βοηθητική μέθοδος: Μετατρέπει τον Principal του Spring (UserDetails) στο πλήρες JPA Entity (User).
+     * @param principal Η ταυτότητα του συνδεδεμένου χρήστη από το Spring Security.
+     * @return Το πλήρες User Entity (Owner).
+     */
+    private User getAuthenticatedUser(@AuthenticationPrincipal UserDetails principal) { // ΔΙΟΡΘΩΣΗ: Αλλαγή τύπου σε UserDetails
+        // Χρησιμοποιούμε το μοναδικό username για να κάνουμε lookup στη βάση
+        return userService.findUserByUsername(principal.getUsername()); 
     }
 
     // --- PETS HANDLING ---
 
     // 1. Προβολή λίστας κατοικιδίων
     @GetMapping("/pets")
-    public String listOwnerPets(@AuthenticationPrincipal User principal, Model model) {
+    public String listOwnerPets(@AuthenticationPrincipal UserDetails principal, Model model) { // ΔΙΟΡΘΩΣΗ: Αλλαγή τύπου
         User owner = getAuthenticatedUser(principal);
         model.addAttribute("pets", petService.findPetsByOwner(owner));
         return "owners/pet-list";
@@ -54,19 +58,18 @@ public class OwnerController {
         return "owners/pet-form";
     }
 
-    // 3. Υποβολή φόρμας κατοικίδιου - ΔΙΟΡΘΩΜΕΝΟ ΜΕ VALIDATION
+    // 3. Υποβολή φόρμας κατοικίδιου
     @PostMapping("/pets")
     public String savePet(
-        @AuthenticationPrincipal User principal,
-        @Valid @ModelAttribute("pet") Pet pet, // Προσθήκη @Valid
-        BindingResult bindingResult,            // Προσθήκη BindingResult
+        @AuthenticationPrincipal UserDetails principal, // ΔΙΟΡΘΩΣΗ: Αλλαγή τύπου
+        @Valid @ModelAttribute("pet") Pet pet, 
+        BindingResult bindingResult,            
         Model model,
         RedirectAttributes redirectAttributes
     ) {
         // Έλεγχος Validation Errors
         if (bindingResult.hasErrors()) {
             model.addAttribute("speciesOptions", new String[]{"Dog", "Cat", "Bird", "Other"});
-            // Επιστροφή στη φόρμα για να εμφανιστούν τα σφάλματα
             return "owners/pet-form";
         }
 
@@ -77,7 +80,6 @@ public class OwnerController {
             return "redirect:/owner/pets";
 
         } catch (RuntimeException e) {
-            // Συλλαμβάνει πιθανά λάθη βάσης δεδομένων ή άλλες Runtime εξαιρέσεις
             model.addAttribute("errorMessage", "Σφάλμα κατά την καταχώρηση: " + e.getMessage());
             model.addAttribute("speciesOptions", new String[]{"Dog", "Cat", "Bird", "Other"});
             return "owners/pet-form";
@@ -89,16 +91,15 @@ public class OwnerController {
 
     // 4. Προβολή λίστας ραντεβού
     @GetMapping("/appointments")
-    public String listAppointments(@AuthenticationPrincipal User principal, Model model) {
+    public String listAppointments(@AuthenticationPrincipal UserDetails principal, Model model) { // ΔΙΟΡΘΩΣΗ: Αλλαγή τύπου
         User owner = getAuthenticatedUser(principal);
-        // Χρησιμοποιεί την JPQL query με JOIN FETCH για βελτιστοποίηση
         model.addAttribute("appointments", appointmentService.findAppointmentsByOwner(owner));
         return "owners/appointment-list";
     }
 
     // 5. Εμφάνιση φόρμας νέου ραντεβού
     @GetMapping("/appointments/new")
-    public String showAppointmentForm(@AuthenticationPrincipal User principal, Model model) {
+    public String showAppointmentForm(@AuthenticationPrincipal UserDetails principal, Model model) { // ΔΙΟΡΘΩΣΗ: Αλλαγή τύπου
         User owner = getAuthenticatedUser(principal);
         model.addAttribute("appointment", new Appointment());
         model.addAttribute("ownerPets", petService.findPetsByOwner(owner)); // Τα κατοικίδια του χρήστη
@@ -106,14 +107,14 @@ public class OwnerController {
         return "owners/appointment-form";
     }
 
-    // 6. Υποβολή φόρμας ραντεβού - ΔΙΟΡΘΩΜΕΝΟ ΜΕ VALIDATION
+    // 6. Υποβολή φόρμας ραντεβού
     @PostMapping("/appointments")
     public String saveAppointment(
-        @AuthenticationPrincipal User principal,
+        @AuthenticationPrincipal UserDetails principal, // ΔΙΟΡΘΩΣΗ: Αλλαγή τύπου
         @Valid @ModelAttribute("appointment") Appointment appointment, // Προσθήκη @Valid
         BindingResult bindingResult,                                   // Προσθήκη BindingResult
-        @RequestParam("petId") Long petId,                            // Λαμβάνουμε το ID του Pet
-        @RequestParam("vetId") Long vetId,                            // Λαμβάνουμε το ID του Vet
+        @RequestParam("petId") Long petId,                            
+        @RequestParam("vetId") Long vetId,                            
         Model model,
         RedirectAttributes redirectAttributes
     ) {
@@ -126,9 +127,18 @@ public class OwnerController {
         }
 
         try {
+            // Αυτός είναι ο συνδεδεμένος χρήστης (Owner)
+            User owner = getAuthenticatedUser(principal);
+            
             // Ανάκτηση των πλήρων Entities για την Business Logic
             Pet pet = petService.findPetById(petId);
             User veterinarian = userService.findUserById(vetId);
+
+            // Έλεγχος Ασφάλειας: Ιδιοκτήτης βλέπει μόνο τα δικά του κατοικίδια/ραντεβού.
+            if (!pet.getOwner().getId().equals(owner.getId())) {
+                 // Θα πετάξει 500/Internal Error, αλλά το μήνυμα είναι σωστό για το catch
+                 throw new SecurityException("Δεν επιτρέπεται η κράτηση για κατοικίδιο που δεν ανήκει στον χρήστη."); 
+            }
 
             appointment.setPet(pet);
             appointment.setVeterinarian(veterinarian);
@@ -141,16 +151,13 @@ public class OwnerController {
             // Business Rule Violation (π.χ. Επικάλυψη, 7ήμερος κανόνας)
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
-        } catch (RuntimeException e) {
+        } catch (RuntimeException e) { 
             // Catch all για NotFound exceptions, κλπ.
             redirectAttributes.addFlashAttribute("errorMessage", "Σφάλμα κατά την κράτηση ραντεβού: " + e.getMessage());
         }
 
         // Σε περίπτωση σφάλματος, επαναφέρουμε το αρχικό appointment object
-        // και τα απαραίτητα δεδομένα (pets, vets) για το form
         redirectAttributes.addFlashAttribute("appointment", appointment);
-
-        // Χρειάζεται να κάνουμε Redirect, αλλιώς χάνεται το μήνυμα
         return "redirect:/owner/appointments/new";
     }
 }
