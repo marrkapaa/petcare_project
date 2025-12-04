@@ -38,7 +38,7 @@ public class SecurityConfig {
     public SecurityFilterChain uiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/register", "/login", "/error", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/register", "/login", "/error", "/css/**", "/js/**", "/images/**, "/debug/**").permitAll()
                 .requestMatchers("/owners/**").hasAuthority("ROLE_OWNER")
                 .requestMatchers("/vets/**").hasAuthority("ROLE_VETERINARIAN")
                 .anyRequest().authenticated()
