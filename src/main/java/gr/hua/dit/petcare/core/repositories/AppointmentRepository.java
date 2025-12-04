@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    // br 1: επικάλυψη κτηνιάτρου
+    // br επικάλυψη κτηνιάτρου
     List<Appointment> findByVeterinarianAndDateTimeBetween(
         User veterinarian,
         LocalDateTime start,
@@ -32,7 +32,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("SELECT a FROM Appointment a " +
         "JOIN FETCH a.pet p " +
-        "JOIN FETCH p.owner o " +   // Φορτώνει τον Owner (Διορθώνει το σφάλμα στον Vet Controller)
+        "JOIN FETCH p.owner o " + 
         "JOIN FETCH a.veterinarian v " +
         "WHERE v = :veterinarian " +
         "ORDER BY a.dateTime ASC")
