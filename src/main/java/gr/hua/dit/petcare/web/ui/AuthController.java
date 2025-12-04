@@ -3,9 +3,7 @@ package gr.hua.dit.petcare.web.ui;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * UI controller for user authentication (login and logout).
- */
+
 @Controller
 public class AuthController {
 
