@@ -14,17 +14,17 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Το όνομα είναι υποχρεωτικό.") // ΠΡΟΣΘΗΚΗ
+    @NotBlank(message = "Το όνομα είναι υποχρεωτικό.")
     @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "Το είδος είναι υποχρεωτικό.") // ΠΡΟΣΘΗΚΗ
+    @NotBlank(message = "Το είδος είναι υποχρεωτικό.")
     @Column(nullable = false)
     private String species;
 
     private String breed;
 
-    @Min(value = 0, message = "Η ηλικία δεν μπορεί να είναι αρνητική.") // ΠΡΟΣΘΗΚΗ
+    @Min(value = 0, message = "Η ηλικία δεν μπορεί να είναι αρνητική.")
     private int age;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,8 +33,6 @@ public class Pet {
 
     public Pet() {
     }
-
-    // --- GETTERS & SETTERS ---
 
     public Long getId() {
         return id;
@@ -84,7 +82,6 @@ public class Pet {
         this.owner = owner;
     }
 
-    // --- EQUALS & HASHCODE (Βασισμένα στο id) ---
 
     @Override
     public boolean equals(Object o) {
