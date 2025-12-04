@@ -3,9 +3,9 @@ package gr.hua.dit.petcare.core.service;
 import gr.hua.dit.petcare.core.model.Appointment;
 import gr.hua.dit.petcare.core.model.AppointmentStatus;
 import gr.hua.dit.petcare.core.model.User;
-import gr.hua.dit.petcare.core.model.VisitRecord; // ΝΕΟ IMPORT
+import gr.hua.dit.petcare.core.model.VisitRecord;
 import gr.hua.dit.petcare.core.repositories.AppointmentRepository;
-import gr.hua.dit.petcare.core.repositories.VisitRecordRepository; // ΝΕΟ IMPORT
+import gr.hua.dit.petcare.core.repositories.VisitRecordRepository;
 import gr.hua.dit.petcare.core.ports.NotificationPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import java.util.List;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final VisitRecordRepository visitRecordRepository; // ΝΕΟ FIELD
+    private final VisitRecordRepository visitRecordRepository;
     private final NotificationPort notificationPort;
 
     public AppointmentService(AppointmentRepository appointmentRepository,
@@ -36,7 +36,7 @@ public class AppointmentService {
         LocalDateTime startTime = newAppointment.getDateTime();
         LocalDateTime endTime = startTime.plusMinutes(30);
 
-        // ΚΑΝΟΝΑΣ 1: Έλεγχος Επικάλυψης Κτηνιάτρου
+        // έλεγχος Επικάλυψης Κτηνιάτρου
         List<Appointment> conflictingAppointments = appointmentRepository
                 .findByVeterinarianAndDateTimeBetween(vet, startTime, endTime);
 
@@ -44,7 +44,7 @@ public class AppointmentService {
             throw new IllegalArgumentException("Ο κτηνίατρος " + vet.getUsername() + " δεν είναι διαθέσιμος την ώρα αυτή.");
         }
 
-        LocalDateTime requiredMinimumTime = startTime.minus(7, ChronoUnit.DAYS); // Ελέγχουμε 7 ημέρες πριν το νέο ραντεβού
+        LocalDateTime requiredMinimumTime = startTime.minus(7, ChronoUnit.DAYS); // ελέγχουμε 7 ημέρες πριν το νέο ραντεβού
 
         List<Appointment> recentAppointments = appointmentRepository
                 .findByPetAndDateTimeAfter(newAppointment.getPet(), requiredMinimumTime);
@@ -83,15 +83,15 @@ public class AppointmentService {
     @Transactional
     public VisitRecord saveVisitRecord(VisitRecord record) {
 
-        // 1. Βρίσκουμε το αρχικό ραντεβού για να αλλάξουμε το status
+        // αρχικό ραντεβού για να αλλάξουμε το status
         Appointment appointment = appointmentRepository.findById(record.getAppointment().getId())
             .orElseThrow(() -> new AppointmentNotFoundException("Appointment not found for this record."));
 
-        // 2. Εφαρμόζουμε τον κανόνα: Αλλάζουμε την κατάσταση του ραντεβού
+        // εφαρμόζουμε τον κανόνα: αλλάζουμε την κατάσταση του ραντεβού
         appointment.setStatus(AppointmentStatus.COMPLETED);
         appointmentRepository.save(appointment);
 
-        // 3. Αποθηκεύουμε το VisitRecord
+        // αποθηκεύουμε το VisitRecord
         return visitRecordRepository.save(record);
     }
 
