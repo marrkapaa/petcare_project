@@ -23,9 +23,6 @@ public class UserService {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Το Username υπάρχει ήδη.");
         }
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Το Email υπάρχει ήδη.");
-        }
 
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -40,11 +37,11 @@ public class UserService {
 
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε: " + username));
     }
     
     public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε με ID: " + id));
     }
 }
