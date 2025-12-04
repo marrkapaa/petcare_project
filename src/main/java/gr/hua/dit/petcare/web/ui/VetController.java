@@ -34,14 +34,12 @@ public class VetController {
         this.userService = userService;
     }
 
-    // 1. Προβολή Προγράμματος (GET /vets/schedule)
+    // προβολή προγράμματος
     @GetMapping("/schedule")
     public String viewVetSchedule(Model model, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
 
-        // Σωστή ανάκτηση του πλήρους User Entity
         User vet = userService.findUserByUsername(principal.getUsername());
 
-        // Η Repositoy Query φέρνει όλα τα απαραίτητα JOIN FETCH
         List<Appointment> appointments = appointmentService.findAppointmentsByVeterinarian(vet);
 
         model.addAttribute("vetName", vet.getUsername());
@@ -50,15 +48,13 @@ public class VetController {
         return "vets/schedule";
     }
 
-    // 2. Εμφάνιση Φόρμας Εγγραφής Επίσκεψης (GET /vets/records/new)
+    // εμφάνιση φόρμας εγγραφής επίσκεψης
     @GetMapping("/records/new")
     public String showVisitRecordForm(@RequestParam Long appointmentId, Model model) {
 
-        // Χειρισμός του case όπου το validation απέτυχε και έγινε redirect
         if (!model.containsAttribute("record")) {
             VisitRecord visitRecord = new VisitRecord();
 
-            // Δημιουργούμε ένα "light" Appointment μόνο με το ID για να συνδεθεί το VisitRecord
             Appointment app = new Appointment();
             app.setId(appointmentId);
             visitRecord.setAppointment(app);
@@ -70,29 +66,25 @@ public class VetController {
         return "vets/record-form";
     }
 
-    // 3. Υποβολή Φόρμας (POST /vets/records) - ΔΙΟΡΘΩΜΕΝΟ ΜΕ VALIDATION
+    // υποβολή φόρμας
     @PostMapping("/records")
     public String saveVisitRecord(
-        @Valid @ModelAttribute("record") VisitRecord visitRecord, // Προσθήκη @Valid
-        BindingResult bindingResult,                                // Προσθήκη BindingResult
+        @Valid @ModelAttribute("record") VisitRecord visitRecord,
+        BindingResult bindingResult,
         RedirectAttributes redirectAttributes
     ) {
         Long appointmentId = visitRecord.getAppointment() != null ? visitRecord.getAppointment().getId() : null;
 
-        // 1. Έλεγχος Validation Errors
         if (bindingResult.hasErrors()) {
-            // Αν το validation αποτύχει, επιστρέφουμε τα σφάλματα μέσω Flash Attributes
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.record", bindingResult);
             redirectAttributes.addFlashAttribute("record", visitRecord);
             return "redirect:/vets/records/new?appointmentId=" + appointmentId;
         }
 
         try {
-            // Ο Service αποθηκεύει το VisitRecord και αλλάζει το Status του Appointment σε COMPLETED.
             appointmentService.saveVisitRecord(visitRecord);
 
         } catch (RuntimeException e) {
-            // Συλλαμβάνει IllegalArgumentException, AppointmentNotFoundException, κλπ.
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             redirectAttributes.addFlashAttribute("record", visitRecord);
             return "redirect:/vets/records/new?appointmentId=" + appointmentId;
