@@ -3,11 +3,11 @@ package gr.hua.dit.petcare.adapters;
 import gr.hua.dit.petcare.config.NotificationClientConfig;
 import gr.hua.dit.petcare.core.ports.NotificationPort;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory; // ΝΕΟ IMPORT
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.ResourceAccessException; // ΝΕΟ IMPORT
-import org.springframework.web.client.RestClientException;    // ΝΕΟ IMPORT
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -16,12 +16,11 @@ import java.util.Map;
 @Component
 public class RestNotificationAdapter implements NotificationPort {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestNotificationAdapter.class); // ΠΡΟΣΘΗΚΗ LOGGER
+    private static final Logger logger = LoggerFactory.getLogger(RestNotificationAdapter.class);
 
     private final RestTemplate restTemplate;
-    private final NotificationClientConfig config; // ΝΕΟ FIELD για να πάρουμε το URL
+    private final NotificationClientConfig config;
 
-    // 1. Αλλαγή Constructor για να παίρνει το Config
     public RestNotificationAdapter(RestTemplate restTemplate, NotificationClientConfig config) {
         this.restTemplate = restTemplate;
         this.config = config;
@@ -29,7 +28,7 @@ public class RestNotificationAdapter implements NotificationPort {
 
     @Override
     public boolean sendNotification(String recipient, String message) {
-        String url = config.getNotificationServiceBaseUrl() + "/api/notify"; // Χρήση Getter
+        String url = config.getNotificationServiceBaseUrl() + "/api/notify";
 
         Map<String, String> requestPayload = new HashMap<>();
         requestPayload.put("to", recipient);
@@ -51,11 +50,9 @@ public class RestNotificationAdapter implements NotificationPort {
             }
 
         } catch (ResourceAccessException e) {
-            // Σφάλμα σύνδεσης (π.χ. η υπηρεσία είναι DOWN ή το URL είναι λάθος)
             logger.error("Αποτυχία σύνδεσης με την εξωτερική υπηρεσία ειδοποιήσεων: {}", url, e);
             return false;
         } catch (RestClientException e) {
-            // Άλλα REST σφάλματα (π.χ. 4xx, 5xx)
             logger.error("Αποτυχία κλήσης ειδοποίησης: {}", e.getMessage(), e);
             return false;
         }
