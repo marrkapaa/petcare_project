@@ -16,7 +16,7 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String password; // Σημείωση: Πρέπει να αποθηκεύεται κρυπτογραφημένος (hashed)
+    private String password;
 
     private String email;
 
@@ -27,7 +27,6 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pet> pets;
 
-    // Σχέσεις για ραντεβού (προσθήκη για πληρότητα, αν δεν υπήρχαν)
     @OneToMany(mappedBy = "veterinarian", fetch = FetchType.LAZY)
     private List<Appointment> appointmentsAsVet;
 
@@ -35,7 +34,6 @@ public class User {
     public User() {
     }
 
-    // --- GETTERS & SETTERS ---
 
     public Long getId() {
         return id;
@@ -86,7 +84,6 @@ public class User {
         this.appointmentsAsVet = appointmentsAsVet;
     }
 
-    // --- EQUALS & HASHCODE (Βασισμένα στο id) ---
 
     @Override
     public boolean equals(Object o) {
