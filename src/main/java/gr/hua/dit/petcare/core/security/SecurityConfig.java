@@ -1,5 +1,6 @@
 package gr.hua.dit.petcare.core.security;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -23,12 +24,13 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http
-            .securityMatcher("/h2-console/**")
-            .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-            .csrf(AbstractHttpConfigurer::disable)
-            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-            .build();
+        http
+            .securityMatcher(PathRequest.toH2Console())
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()))
+            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+
+        return http.build();
     }
 
     @Bean
@@ -36,26 +38,23 @@ public class SecurityConfig {
     public SecurityFilterChain uiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/register", "/login", "/css/**", "/js/**").permitAll()
-
+                .requestMatchers("/", "/register", "/login", "/error", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/owners/**").hasAuthority("ROLE_OWNER")
-
                 .requestMatchers("/vets/**").hasAuthority("ROLE_VETERINARIAN")
-
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true) // μετά το login, πήγαινε στην αρχική
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login") // μετά το logout, πήγαινε στο login
+                .logoutSuccessUrl("/login?logout")
                 .permitAll()
             )
             .csrf(csrf -> csrf.ignoringRequestMatchers("/login", "/register"));
 
         return http.build();
     }
-
 }
