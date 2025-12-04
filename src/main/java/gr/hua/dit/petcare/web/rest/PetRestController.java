@@ -40,7 +40,7 @@ public class PetRestController {
     @ResponseStatus(HttpStatus.CREATED)
     public Pet createPet(
         @AuthenticationPrincipal UserDetails principal,
-        @Valid @RequestBody Pet pet // Χρήση Pet Entity/Model
+        @Valid @RequestBody Pet pet
     ) {
         User owner = getAuthenticatedUser(principal);
         return petService.registerNewPet(pet, owner);
