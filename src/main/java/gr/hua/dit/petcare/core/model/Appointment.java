@@ -15,8 +15,8 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Η ημερομηνία και ώρα είναι υποχρεωτικές.") // ΠΡΟΣΘΗΚΗ
-    @Future(message = "Το ραντεβού πρέπει να οριστεί για μελλοντική ημερομηνία.") // ΠΡΟΣΘΗΚΗ
+    @NotNull(message = "Η ημερομηνία και ώρα είναι υποχρεωτικές.")
+    @Future(message = "Το ραντεβού πρέπει να οριστεί για μελλοντική ημερομηνία.")
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
@@ -28,7 +28,7 @@ public class Appointment {
     @JoinColumn(name = "vet_id", nullable = false)
     private User veterinarian;
 
-    @NotBlank(message = "Ο λόγος της επίσκεψης είναι υποχρεωτικός.") // ΠΡΟΣΘΗΚΗ
+    @NotBlank(message = "Ο λόγος της επίσκεψης είναι υποχρεωτικός.")
     private String reason;
 
     @Enumerated(EnumType.STRING)
@@ -40,7 +40,6 @@ public class Appointment {
     public Appointment() {
     }
 
-    // --- GETTERS & SETTERS ---
 
     public Long getId() {
         return id;
@@ -91,19 +90,17 @@ public class Appointment {
         this.visitRecord = visitRecord;
     }
 
-    // --- EQUALS & HASHCODE (Βασισμένα στο id) ---
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Appointment that = (Appointment) o;
-        // Χρησιμοποιούμε μόνο το id για την ταυτότητα (JPA Best Practice)
         return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return 31; // Σταθερή τιμή για JPA entities με Lazy Loading. Εναλλακτικά: Objects.hash(id) αν το id δεν είναι null.
+        return 31;
     }
 }
