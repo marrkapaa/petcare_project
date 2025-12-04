@@ -22,7 +22,7 @@ public class RegistrationController {
         this.userService = userService;
     }
 
-    // 1. Εμφάνιση Φόρμας (GET /register)
+    // εμφάνιση φόρμας
     @GetMapping("/register")
     public String showRegistrationForm(final Model model) {
         if (!model.containsAttribute("registrationRequest")) {
@@ -34,19 +34,18 @@ public class RegistrationController {
         return "register";
     }
 
-    // 2. Υποβολή Φόρμας (POST /register) - ΔΙΟΡΘΩΜΕΝΟ ΜΕ VALIDATION
+    // υποβολή φόρμας
     @PostMapping("/register")
     public String handleFormSubmission(
-        @Valid @ModelAttribute("registrationRequest") final UserRegistrationRequest request, // Προσθήκη @Valid
-        BindingResult bindingResult,                                                          // Προσθήκη BindingResult
-        final Model model,                                                                   // Χρησιμοποιούμε Model
+        @Valid @ModelAttribute("registrationRequest") final UserRegistrationRequest request,
+        BindingResult bindingResult,
+        final Model model,
         RedirectAttributes redirectAttributes
     ) {
 
-        // 1. Έλεγχος Validation Errors (π.χ. @NotBlank, @Size)
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", Role.values());
-            return "register"; // Επιστροφή στη φόρμα για να εμφανιστούν τα σφάλματα
+            return "register";
         }
 
         try {
@@ -56,10 +55,9 @@ public class RegistrationController {
             return "redirect:/login";
 
         } catch (IllegalArgumentException e) {
-            // 2. Έλεγχος Business Logic Errors (π.χ. username υπάρχει ήδη)
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("roles", Role.values());
-            return "register"; // Επιστροφή στη φόρμα με μήνυμα σφάλματος
+            return "register";
         }
     }
 }
