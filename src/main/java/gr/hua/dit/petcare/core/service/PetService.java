@@ -16,21 +16,20 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    // 1. Καταχώριση νέου Pet
+    // νέο Pet
     public Pet registerNewPet(Pet pet, User owner) {
         pet.setOwner(owner);
         return petRepository.save(pet);
     }
 
-    // 2. Εύρεση Pet με βάση τον Owner (Authorization Rule)
+    // εύρεση Pet με βάση τον Owner
     public List<Pet> findPetsByOwner(User owner) {
         return petRepository.findByOwner(owner);
     }
 
-    // 3. Εύρεση Pet με ID (για AppointmentController lookup)
+    // εύρεση Pet με ID (για AppointmentController lookup)
     public Pet findPetById(Long id) {
         return petRepository.findById(id)
-            // Αλλαγή: Χρησιμοποιούμε custom exception
             .orElseThrow(() -> new PetNotFoundException("Pet not found with ID: " + id));
     }
 }
