@@ -1,40 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/styles.css}">
     <meta charset="UTF-8">
     <title>Τα Κατοικίδιά μου</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
-<h1>Τα Κατοικίδιά μου</h1>
 
-<a th:href="@{/owners/pets/new}">+ Καταχώριση Νέου Pet</a>
+<header class="text-center p-4">
+    <h1>PetCare System <small class="text-muted" style="font-size: 0.6em;">/ Τα Κατοικίδιά μου</small></h1>
+</header>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Όνομα</th>
-        <th>Είδος</th>
-        <th>Ράτσα</th>
-        <th>Ηλικία</th>
-        <th>Διαχείριση</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="pet : ${pets}">
-        <td th:text="${pet.name}">Όνομα Pet</td>
-        <td th:text="${pet.species}">Είδος</td>
-        <td th:text="${pet.breed}">Ράτσα</td>
-        <td th:text="${pet.age}">Ηλικία</td>
-        <td><a th:href="@{'/owners/appointments/new?petId=' + ${pet.id}}">Κλείσιμο Ραντεβού</a></td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(pets)}">
-        <td colspan="5">Δεν έχετε καταχωρίσει κατοικίδια.</td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <div class="form-container" style="max-width: 800px;"> <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="m-0">Λίστα</h3>
+            <a th:href="@{/owners/pets/new}" class="btn btn-primary">+ ΝΕΟ PET</a>
+        </div>
 
-<p><a th:href="@{/}">Επιστροφή στην Αρχική</a></p>
+        <div class="table-responsive">
+            <table class="table table-bordered border-dark">
+                <thead class="table-dark">
+                <tr>
+                    <th>Όνομα</th>
+                    <th>Είδος</th>
+                    <th>Ράτσα</th>
+                    <th>Ηλικία</th>
+                    <th>Ενέργειες</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pet : ${pets}">
+                    <td class="fw-bold" th:text="${pet.name}">Όνομα</td>
+                    <td th:text="${pet.species}">Είδος</td>
+                    <td th:text="${pet.breed}">Ράτσα</td>
+                    <td th:text="${pet.age}">Ηλικία</td>
+                    <td>
+                        <a th:href="@{'/owners/appointments/new?petId=' + ${pet.id}}" class="btn btn-sm btn-outline-dark rounded-0">
+                            Κλείσιμο Ραντεβού
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(pets)}">
+                    <td colspan="5" class="text-center py-4 text-muted">Δεν έχετε καταχωρίσει κατοικίδια ακόμα.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a th:href="@{/}" class="text-decoration-none text-dark fw-bold">&larr; Επιστροφή στην Αρχική</a>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
