@@ -14,7 +14,7 @@ public class VisitRecord {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime visitDate; // Η ημερομηνία αυτή συνήθως ρυθμίζεται αυτόματα στο Service/Controller
+    private LocalDateTime visitDate;
 
     @NotBlank(message = "Η διάγνωση είναι υποχρεωτική.") // ΠΡΟΣΘΗΚΗ
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -31,8 +31,6 @@ public class VisitRecord {
 
     public VisitRecord() {
     }
-
-    // --- GETTERS & SETTERS ---
 
     public Long getId() {
         return id;
@@ -75,8 +73,6 @@ public class VisitRecord {
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
     }
-
-    // --- EQUALS & HASHCODE (Βασισμένα στο id) ---
 
     @Override
     public boolean equals(Object o) {
