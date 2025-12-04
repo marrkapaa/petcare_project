@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -18,7 +20,6 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     @Transactional
     public void registerNewUser(UserRegistrationRequest request) {
@@ -37,13 +38,12 @@ public class UserService {
             throw new IllegalArgumentException("Το Username υπάρχει ήδη.");
         }
 
-
         if (!user.getPassword().startsWith("$2a$")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
         if (user.getRole() == null) {
-            user.setRole(Role.OWNER);
+            user.setRole(Role.OWNER); 
         }
 
         User savedUser = userRepository.save(user);
@@ -54,9 +54,13 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε: " + username));
     }
-
+    
     public User findUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε με ID: " + id));
+    }
+
+    public List<User> findAllUsersByRole(Role role) {
+        return userRepository.findByRole(role);
     }
 }
