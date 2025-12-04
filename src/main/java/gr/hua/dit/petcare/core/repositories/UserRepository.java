@@ -1,7 +1,7 @@
 package gr.hua.dit.petcare.core.repositories;
 
 import gr.hua.dit.petcare.core.model.User;
-import gr.hua.dit.petcare.core.model.Role; // ΝΕΟ IMPORT
+import gr.hua.dit.petcare.core.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
