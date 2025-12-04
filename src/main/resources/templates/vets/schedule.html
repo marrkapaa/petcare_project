@@ -1,45 +1,65 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/styles.css}">
     <meta charset="UTF-8">
     <title>Πρόγραμμα Κτηνιάτρου</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
-<h1 th:text="'Πρόγραμμα: ' + ${vetName}">Πρόγραμμα Κτηνιάτρου</h1>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Ώρα</th>
-        <th>Κατοικίδιο</th>
-        <th>Ιδιοκτήτης</th>
-        <th>Λόγος</th>
-        <th>Κατάσταση</th>
-        <th>Ενέργειες</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="app : ${appointments}">
-        <td th:text="${#temporals.format(app.dateTime, 'HH:mm dd/MM/yyyy')}">Ώρα</td>
-        <td th:text="${app.pet.name}">Όνομα Pet</td>
-        <td th:text="${app.pet.owner.username}">Όνομα Owner</td>
-        <td th:text="${app.reason}">Λόγος</td>
-        <td th:text="${app.status}">Status</td>
+<header class="text-center p-4">
+    <h1>PetCare System <small class="text-muted" style="font-size: 0.6em;">/ Πρόγραμμα Ιατρείου</small></h1>
+</header>
 
-        <td>
-            <a th:href="@{'/vets/records/new?appointmentId=' + ${app.id}}">
-                Καταχώριση Θεραπείας
-            </a>
-        </td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(appointments)}">
-        <td colspan="6">Δεν υπάρχουν ραντεβού στο πρόγραμμά σας.</td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <div class="form-container" style="max-width: 1000px;">
+        
+        <h3 class="mb-4 text-center">Πρόγραμμα: <span class="text-primary" th:text="${vetName}">Vet Name</span></h3>
 
-<p><a th:href="@{/}">Επιστροφή στην Αρχική</a></p>
+        <div class="table-responsive">
+            <table class="table table-bordered border-dark align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>Ώρα</th>
+                    <th>Κατοικίδιο</th>
+                    <th>Ιδιοκτήτης</th>
+                    <th>Λόγος</th>
+                    <th>Κατάσταση</th>
+                    <th>Ενέργειες</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="app : ${appointments}">
+                    <td class="fw-bold" th:text="${#temporals.format(app.dateTime, 'HH:mm dd/MM/yyyy')}">Ώρα</td>
+                    <td th:text="${app.pet.name}">Pet</td>
+                    <td th:text="${app.pet.owner.username}">Owner</td>
+                    <td th:text="${app.reason}">Λόγος</td>
+                    <td>
+                        <span th:text="${app.status}" 
+                              th:class="${app.status.name() == 'SCHEDULED' ? 'badge bg-warning text-dark' : 'badge bg-success'}">
+                        </span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/vets/records/new?appointmentId=' + ${app.id}}" 
+                           class="btn btn-sm btn-outline-dark rounded-0">
+                           <i class="bi bi-file-medical"></i> Καταχώριση Θεραπείας
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(appointments)}">
+                    <td colspan="6" class="text-center py-4 text-muted">Δεν υπάρχουν ραντεβού στο πρόγραμμά σας.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a th:href="@{/}" class="text-decoration-none text-dark fw-bold">&larr; Επιστροφή στην Αρχική</a>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
