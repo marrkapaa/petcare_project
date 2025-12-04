@@ -20,7 +20,6 @@
 
     <hr>
 
-    <!-- ΔΙΟΡΘΩΣΗ: Προσθήκη ROLE_ για συνέπεια με το Spring Security -->
     <section class="role-section" sec:authorize="hasAuthority('ROLE_OWNER')">
         <h2>Πίνακας Ιδιοκτήτη (OWNER)</h2>
         <p>Ως ιδιοκτήτης, μπορείτε να διαχειριστείτε τα κατοικίδιά σας και τα ραντεβού σας.</p>
@@ -30,7 +29,6 @@
         </ul>
     </section>
 
-    <!-- ΔΙΟΡΘΩΣΗ: Προσθήκη ROLE_ για συνέπεια με το Spring Security -->
     <section class="role-section" sec:authorize="hasAuthority('ROLE_VETERINARIAN')">
         <h2>Πίνακας Κτηνιάτρου (VETERINARIAN)</h2>
         <p>Ως κτηνίατρος, μπορείτε να διαχειριστείτε το πρόγραμμα και τα ιατρικά αρχεία.</p>
