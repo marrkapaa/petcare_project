@@ -1,9 +1,9 @@
 :root {
-    --color-primary: #0056b3; /* Deep Blue (Brand Color) */
-    --color-secondary: #f0f0f0; /* Light Beige/Off-White (Background) */
-    --color-accent: #333333; /* Dark Text Color */
+    --color-primary: #0056b3;
+    --color-secondary: #f0f0f0;
+    --color-accent: #333333;
     --color-light: white;
-    --color-danger: #dc3545; /* Red for errors */
+    --color-danger: #dc3545;
 
     --border-radius: 6px;
     --border-style: 2px solid var(--color-accent);
@@ -17,9 +17,6 @@ body {
     padding: 0;
 }
 
-/* =========================================================
-   TYPOGRAPHY
-   ========================================================= */
 h1, h2, h3 {
     color: var(--color-primary);
     font-weight: 700;
@@ -29,12 +26,7 @@ small {
     color: #6c757d;
 }
 
-/* =========================================================
-   LAYOUT & CONTAINERS (Επαγγελματικό Styling)
-   ========================================================= */
-
 .form-container {
-    /* Κεντράρισμα και καθαρό πλαίσιο (Box-Shadow Lift) */
     margin: 40px auto;
     max-width: 550px;
     padding: 30px;
@@ -44,12 +36,7 @@ small {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
-/* =========================================================
-   FORMS AND INPUTS
-   ========================================================= */
-
 .form-label {
-    /* Επαγγελματική, καθαρή εμφάνιση labels */
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 5px;
@@ -58,30 +45,23 @@ small {
 }
 
 .form-control, .form-select {
-    /* Ενοποίηση εμφάνισης inputs */
     width: 100%;
     padding: 10px 12px;
     margin-top: 5px;
     margin-bottom: 15px;
     border: 1px solid #ced4da;
     border-radius: var(--border-radius);
-    box-sizing: border-box; /* Περιλαμβάνει padding/border στο width */
+    box-sizing: border-box;
     transition: border-color 0.3s;
 }
 
 .form-control:focus, .form-select:focus {
-    /* Εφέ focus */
     border-color: var(--color-primary);
     box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
     outline: none;
 }
 
-/* =========================================================
-   BUTTONS (Επαγγελματικά Κουμπιά)
-   ========================================================= */
-
 .btn {
-    /* Γενικό styling κουμπιών */
     display: inline-block;
     padding: 10px 20px;
     font-weight: 600;
@@ -93,31 +73,26 @@ small {
 }
 
 .btn-primary {
-    /* Κουμπιά Submit (Register, Login) */
     background-color: var(--color-primary);
     color: var(--color-light);
 }
 
 .btn-primary:hover {
-    background-color: #004499; /* Slightly darker blue on hover */
+    background-color: #004499;
 }
 
 .btn-danger {
-    /* Κουμπί Logout */
     background-color: var(--color-danger);
     color: var(--color-light);
 }
 
-/* =========================================================
-   TABLES AND UTILITIES (Λίστες Ραντεβού/Pets)
-   ========================================================= */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     background: var(--color-light);
     border-radius: var(--border-radius);
-    overflow: hidden; /* Για να φαίνεται το border-radius */
+    overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -132,7 +107,6 @@ th {
     color: var(--color-light);
 }
 
-/* Error/Success Messages */
 .text-danger {
     color: var(--color-danger);
     font-weight: bold;
