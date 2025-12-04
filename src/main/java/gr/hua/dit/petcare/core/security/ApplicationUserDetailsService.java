@@ -21,7 +21,7 @@ public class ApplicationUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         final User user = this.userRepository
-            .findByUsername(username) // Χρησιμοποιεί το findByUsername του Repository σας
+            .findByUsername(username)
             .orElse(null);
 
         if (user == null) {
@@ -31,7 +31,7 @@ public class ApplicationUserDetailsService implements UserDetailsService {
         return new ApplicationUserDetails(
             user.getId(),
             user.getUsername(),
-            user.getPassword(), // Το πεδίο password του User Entity είναι το hash
+            user.getPassword(),
             user.getRole()
         );
     }
