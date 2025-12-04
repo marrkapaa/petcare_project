@@ -1,6 +1,6 @@
 package gr.hua.dit.petcare.core.security;
 
-import gr.hua.dit.petcare.core.model.Role; // Χρησιμοποιεί το δικό σας Role Enum
+import gr.hua.dit.petcare.core.model.Role;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +14,7 @@ public final class ApplicationUserDetails implements UserDetails {
     private final Long userId;
     private final String username;
     private final String passwordHash;
-    private final Role role; // Ο ρόλος από το User Entity
+    private final Role role;
 
     public ApplicationUserDetails(final Long userId,
                                   final String username,
