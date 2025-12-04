@@ -15,14 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 1. Password Encoder - Χρήση BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 2. ΠΡΩΤΟΣ ΚΑΝΟΝΑΣ (ORDER 1): H2 Console Fix
-    // Απαιτείται για να λειτουργήσει το H2 Console όταν είναι ενεργοποιημένη η ασφάλεια
     @Bean
     @Order(1)
     public SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -34,34 +31,28 @@ public class SecurityConfig {
             .build();
     }
 
-    // 3. ΔΕΥΤΕΡΟΣ ΚΑΝΟΝΑΣ (ORDER 2): UI Security (Owner/Vet Roles)
     @Bean
     @Order(2)
     public SecurityFilterChain uiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                // Δημόσιες σελίδες: Αρχική, Εγγραφή, Login
                 .requestMatchers("/", "/register", "/login", "/css/**", "/js/**").permitAll()
 
-                // Owners Access: Μόνο με ρόλο ROLE_OWNER
                 .requestMatchers("/owners/**").hasAuthority("ROLE_OWNER")
 
-                // Vets Access: Μόνο με ρόλο ROLE_VETERINARIAN
                 .requestMatchers("/vets/**").hasAuthority("ROLE_VETERINARIAN")
 
-                // Οποιοδήποτε άλλο request απαιτεί Authentication
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true) // Μετά το login, πήγαινε στην αρχική
+                .defaultSuccessUrl("/", true) // μετά το login, πήγαινε στην αρχική
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login") // Μετά το logout, πήγαινε στο login
+                .logoutSuccessUrl("/login") // μετά το logout, πήγαινε στο login
                 .permitAll()
             )
-            // Απενεργοποίηση CSRF για το POST /login (standard practice)
             .csrf(csrf -> csrf.ignoringRequestMatchers("/login", "/register"));
 
         return http.build();
