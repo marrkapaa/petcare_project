@@ -1,48 +1,61 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/styles.css}">
     <meta charset="UTF-8">
-    <title>Καταχώριση Θεραπείας/Σημειώσεων</title>
+    <title>Καταχώριση Θεραπείας</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
-<h1>Καταχώριση Ιατρικού Αρχείου</h1>
 
-<div th:if="${errorMessage != null}" style="color: red;">
-    <p th:text="${errorMessage}">Μήνυμα Λάθους</p>
+<header class="text-center p-4">
+    <h1>PetCare System <small class="text-muted" style="font-size: 0.6em;">/ Ιατρικός Φάκελος</small></h1>
+</header>
+
+<div class="container">
+    <div class="form-container">
+
+        <div class="alert alert-danger rounded-0 border-2 border-dark" th:if="${errorMessage != null}">
+            <strong th:text="${errorMessage}"></strong>
+        </div>
+
+        <form th:action="@{/vets/records}" th:object="${record}" method="post">
+
+            <input type="hidden" th:field="*{appointment.id}" th:value="${appointmentId}">
+
+            <div class="mb-4 pb-2 border-bottom border-dark">
+                <h4>Ραντεβού ID: <span class="badge bg-dark" th:text="${appointmentId}"></span></h4>
+            </div>
+
+            <div class="mb-3">
+                <label for="visitDate" class="form-label">Ημερομηνία & Ώρα Επίσκεψης</label>
+                <input type="datetime-local" id="visitDate" th:field="*{visitDate}" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="diagnosis" class="form-label">Διάγνωση</label>
+                <textarea id="diagnosis" th:field="*{diagnosis}" class="form-control" rows="3" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="treatmentNotes" class="form-label">Σημειώσεις Θεραπείας</label>
+                <textarea id="treatmentNotes" th:field="*{treatmentNotes}" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="vaccinesGiven" class="form-label">Εμβόλια (Προαιρετικό)</label>
+                <input type="text" id="vaccinesGiven" th:field="*{vaccinesGiven}" class="form-control" placeholder="π.χ. Rabies, DHPP">
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">ΟΛΟΚΛΗΡΩΣΗ & ΚΑΤΑΧΩΡΙΣΗ</button>
+                <a th:href="@{/vets/schedule}" class="btn btn-outline-dark">ΑΚΥΡΩΣΗ</a>
+            </div>
+
+        </form>
+    </div>
 </div>
 
-<form th:action="@{/vets/records}" th:object="${record}" method="post">
-
-    <input type="hidden" th:field="*{appointment.id}" th:value="${appointmentId}">
-
-    <h2>Ραντεβού ID: <span th:text="${appointmentId}"></span></h2>
-    <hr>
-
-    <div>
-        <label for="visitDate">Ημερομηνία Επίσκεψης:</label>
-        <input type="datetime-local" id="visitDate" th:field="*{visitDate}" required>
-    </div>
-
-    <div>
-        <label for="diagnosis">Διάγνωση:</label>
-        <textarea id="diagnosis" th:field="*{diagnosis}" required></textarea>
-    </div>
-
-    <div>
-        <label for="treatmentNotes">Σημειώσεις Θεραπείας:</label>
-        <textarea id="treatmentNotes" th:field="*{treatmentNotes}"></textarea>
-    </div>
-
-    <div>
-        <label for="vaccinesGiven">Εμβόλια που χορηγήθηκαν:</label>
-        <input type="text" id="vaccinesGiven" th:field="*{vaccinesGiven}">
-    </div>
-
-    <button type="submit">Ολοκλήρωση & Καταχώριση</button>
-</form>
-
-<p><a th:href="@{/vets/schedule}">Επιστροφή στο Πρόγραμμα</a></p>
 </body>
 </html>
