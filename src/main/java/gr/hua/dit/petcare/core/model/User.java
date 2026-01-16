@@ -1,5 +1,6 @@
 package gr.hua.dit.petcare.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -24,16 +25,20 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    // --- ΔΙΟΡΘΩΣΗ: ΠΡΟΣΘΗΚΗ @JsonIgnore ---
+    // Αυτό λέει στο Swagger: "Μην διαβάσεις τα κατοικίδια όταν δείχνεις τον χρήστη"
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pet> pets;
 
+    // --- ΔΙΟΡΘΩΣΗ: ΠΡΟΣΘΗΚΗ @JsonIgnore ---
+    // Αυτό λέει στο Swagger: "Μην διαβάσεις τα ραντεβού όταν δείχνεις τον κτηνίατρο"
+    @JsonIgnore
     @OneToMany(mappedBy = "veterinarian", fetch = FetchType.LAZY)
     private List<Appointment> appointmentsAsVet;
 
-
     public User() {
     }
-
 
     public Long getId() {
         return id;
@@ -83,7 +88,6 @@ public class User {
     public void setAppointmentsAsVet(List<Appointment> appointmentsAsVet) {
         this.appointmentsAsVet = appointmentsAsVet;
     }
-
 
     @Override
     public boolean equals(Object o) {

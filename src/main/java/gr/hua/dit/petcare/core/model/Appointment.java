@@ -1,5 +1,6 @@
 package gr.hua.dit.petcare.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +35,7 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
     private VisitRecord visitRecord;
 
@@ -89,7 +91,6 @@ public class Appointment {
     public void setVisitRecord(VisitRecord visitRecord) {
         this.visitRecord = visitRecord;
     }
-
 
     @Override
     public boolean equals(Object o) {

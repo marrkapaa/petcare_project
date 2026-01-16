@@ -1,6 +1,6 @@
 package gr.hua.dit.petcare.core.security;
 
-import gr.hua.dit.petcare.core.service.CustomUserDetailsService; 
+import gr.hua.dit.petcare.core.service.CustomUserDetailsService;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -33,10 +35,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        
-
         provider.setUserDetailsService(customUserDetailsService);
-        
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
@@ -58,7 +57,13 @@ public class SecurityConfig {
     public SecurityFilterChain uiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/register", "/login", "/error", "/css/**", "/js/**", "/images/**", "/debug/**").permitAll()
+                .requestMatchers(
+                    "/", "/register", "/login", "/error", "/css/**", "/js/**", "/images/**", "/debug/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+                ).permitAll()
+
                 .requestMatchers("/owners/**").hasAuthority("ROLE_OWNER")
                 .requestMatchers("/vets/**").hasAuthority("ROLE_VETERINARIAN")
                 .anyRequest().authenticated()
@@ -74,8 +79,8 @@ public class SecurityConfig {
                 .permitAll()
             )
             .csrf(csrf -> csrf.ignoringRequestMatchers("/login", "/register"));
-            
-            http.authenticationProvider(authenticationProvider());
+
+        http.authenticationProvider(authenticationProvider());
 
         return http.build();
     }
