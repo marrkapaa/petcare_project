@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +33,20 @@ public class RestNotificationAdapter implements NotificationPort {
     public boolean sendNotification(String recipient, String message) {
         String url = config.getNotificationServiceBaseUrl() + "/api/notify";
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer notification-service-secret-123"); // <--- Το κλειδί ασφαλείας
+
         Map<String, String> requestPayload = new HashMap<>();
         requestPayload.put("to", recipient);
         requestPayload.put("body", message);
 
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestPayload, headers);
+
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(
                 url,
-                requestPayload,
+                requestEntity,
                 String.class
             );
 
