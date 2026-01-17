@@ -31,7 +31,7 @@ public class OwnerController {
     }
 
     private User getAuthenticatedUser(@AuthenticationPrincipal UserDetails principal) {
-        return userService.findUserByUsername(principal.getUsername()); 
+        return userService.findUserByUsername(principal.getUsername());
     }
 
     @GetMapping("/pets")
@@ -51,8 +51,8 @@ public class OwnerController {
     @PostMapping("/pets")
     public String savePet(
         @AuthenticationPrincipal UserDetails principal,
-        @Valid @ModelAttribute("pet") Pet pet, 
-        BindingResult bindingResult,            
+        @Valid @ModelAttribute("pet") Pet pet,
+        BindingResult bindingResult,
         Model model,
         RedirectAttributes redirectAttributes
     ) {
@@ -83,10 +83,10 @@ public class OwnerController {
     public String showAppointmentForm(@AuthenticationPrincipal UserDetails principal, Model model) {
         User owner = getAuthenticatedUser(principal);
         model.addAttribute("appointment", new Appointment());
-        
-        model.addAttribute("ownerPets", petService.findPetsByOwner(owner));
+
+        model.addAttribute("pets", petService.findPetsByOwner(owner));
         model.addAttribute("vets", userService.findAllUsersByRole(Role.VETERINARIAN));
-        
+
         return "owners/appointment-form";
     }
 
@@ -104,7 +104,7 @@ public class OwnerController {
 
         if (bindingResult.hasErrors() || petId == null || vetId == null) {
             model.addAttribute("errorMessage", "Παρακαλώ συμπληρώστε όλα τα πεδία σωστά.");
-            model.addAttribute("ownerPets", petService.findPetsByOwner(owner));
+            model.addAttribute("pets", petService.findPetsByOwner(owner));
             model.addAttribute("vets", userService.findAllUsersByRole(Role.VETERINARIAN));
             return "owners/appointment-form";
         }
@@ -114,14 +114,14 @@ public class OwnerController {
             User veterinarian = userService.findUserById(vetId);
 
             if (!pet.getOwner().getId().equals(owner.getId())) {
-                 throw new SecurityException("Δεν επιτρέπεται η κράτηση για ξένο κατοικίδιο."); 
+                 throw new SecurityException("Δεν επιτρέπεται η κράτηση για ξένο κατοικίδιο.");
             }
 
             appointment.setPet(pet);
             appointment.setVeterinarian(veterinarian);
 
             appointmentService.createAppointment(appointment);
-            
+
             redirectAttributes.addFlashAttribute("successMessage", "Το ραντεβού κλείστηκε επιτυχώς!");
             return "redirect:/owners/appointments";
 
@@ -129,7 +129,7 @@ public class OwnerController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/owners/appointments/new";
 
-        } catch (RuntimeException e) { 
+        } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Σφάλμα συστήματος: " + e.getMessage());
             return "redirect:/owners/appointments/new";
         }
