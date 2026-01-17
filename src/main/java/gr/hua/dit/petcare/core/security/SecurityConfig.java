@@ -78,7 +78,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/login", "/register"));
+            .csrf(csrf -> csrf.disable());
 
         http.authenticationProvider(authenticationProvider());
 
