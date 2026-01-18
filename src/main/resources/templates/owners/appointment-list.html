@@ -20,6 +20,10 @@
 
 <div class="container py-5">
 
+    <div th:if="${successMessage}" class="alert alert-success rounded-3 mb-4 shadow-sm">
+        <i class="fas fa-check-circle me-1"></i> <span th:text="${successMessage}"></span>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold m-0"><i class="fas fa-history me-2 text-primary"></i>Ιστορικό Ραντεβού</h3>
         <a th:href="@{/owners/appointments/new}" class="btn btn-new shadow-sm">
@@ -37,6 +41,7 @@
                     <th>Ημερομηνία & Ώρα</th>
                     <th>Λόγος Επίσκεψης</th>
                     <th>Κατάσταση</th>
+                    <th>Ενέργειες</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -65,9 +70,24 @@
                             SCHEDULED
                         </span>
                     </td>
+                    <td class="text-end">
+                        <form th:if="${app.status.name() == 'SCHEDULED' or app.status.name() == 'PENDING'}"
+                              th:action="@{'/owners/appointments/' + ${app.id} + '/cancel'}"
+                              method="post"
+                              onsubmit="return confirm('Είστε σίγουροι ότι θέλετε να ακυρώσετε το ραντεβού;');">
+
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                <i class="fas fa-times me-1"></i> Ακύρωση
+                            </button>
+                        </form>
+
+                        <span th:unless="${app.status.name() == 'SCHEDULED' or app.status.name() == 'PENDING'}" class="text-muted small">
+                            -
+                        </span>
+                    </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(appointments)}">
-                    <td colspan="5" class="text-center py-5">
+                    <td colspan="6" class="text-center py-5">
                         <i class="fas fa-calendar-times fa-2x text-muted mb-3 opacity-25"></i>
                         <p class="text-muted mb-0">Δεν υπάρχουν προγραμματισμένα ραντεβού.</p>
                     </td>

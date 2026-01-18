@@ -51,8 +51,23 @@ public class SecurityConfig {
         return provider;
     }
 
+    // --- 1. ΑΛΥΣΙΔΑ ΓΙΑ ΤΟ H2 CONSOLE (Βάση Δεδομένων) ---
+    // Αυτό λύνει το πρόβλημα με το redirect
     @Bean
     @Order(1)
+    public SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher(PathRequest.toH2Console()) // Πιάνει μόνο το /h2-console
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // Επιτρέπει σε όλους να δουν τη φόρμα σύνδεσης της βάσης
+            .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console())) // Κλείνει το CSRF για τη βάση
+            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)); // Επιτρέπει τα Frames
+
+        return http.build();
+    }
+
+    // --- 2. ΑΛΥΣΙΔΑ ΓΙΑ ΤΟ API (JWT) ---
+    @Bean
+    @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
             .securityMatcher("/api/**")
@@ -69,8 +84,9 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // --- 3. ΑΛΥΣΙΔΑ ΓΙΑ ΤΟ UI (Cookies) ---
     @Bean
-    @Order(2)
+    @Order(3)
     public SecurityFilterChain uiFilterChain(HttpSecurity http) throws Exception {
         http
             .securityMatcher("/**")

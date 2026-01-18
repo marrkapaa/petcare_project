@@ -44,7 +44,6 @@ public class OwnerController {
     @GetMapping("/pets/new")
     public String showPetForm(Model model) {
         model.addAttribute("pet", new Pet());
-        model.addAttribute("speciesOptions", new String[]{"Σκύλος", "Γάτα", "Πτηνό", "Άλλο"});
         return "owners/pet-form";
     }
 
@@ -84,6 +83,7 @@ public class OwnerController {
         User owner = getAuthenticatedUser(principal);
         model.addAttribute("appointment", new Appointment());
 
+        // Η σωστή ονομασία για το HTML
         model.addAttribute("pets", petService.findPetsByOwner(owner));
         model.addAttribute("vets", userService.findAllUsersByRole(Role.VETERINARIAN));
 
@@ -114,7 +114,7 @@ public class OwnerController {
             User veterinarian = userService.findUserById(vetId);
 
             if (!pet.getOwner().getId().equals(owner.getId())) {
-                 throw new SecurityException("Δεν επιτρέπεται η κράτηση για ξένο κατοικίδιο.");
+                throw new SecurityException("Δεν επιτρέπεται η κράτηση για ξένο κατοικίδιο.");
             }
 
             appointment.setPet(pet);
@@ -133,5 +133,44 @@ public class OwnerController {
             redirectAttributes.addFlashAttribute("errorMessage", "Σφάλμα συστήματος: " + e.getMessage());
             return "redirect:/owners/appointments/new";
         }
+    }
+
+    // --- ΑΚΥΡΩΣΗ ΡΑΝΤΕΒΟΥ ---
+    @PostMapping("/appointments/{id}/cancel")
+    public String cancelAppointment(@PathVariable Long id, @AuthenticationPrincipal UserDetails principal, RedirectAttributes redirectAttributes) {
+        User owner = getAuthenticatedUser(principal);
+
+        Appointment app = appointmentService.findAppointmentById(id);
+
+        if (!app.getPet().getOwner().getId().equals(owner.getId())) {
+            throw new SecurityException("Δεν μπορείτε να ακυρώσετε ξένο ραντεβού.");
+        }
+
+        appointmentService.cancelAppointment(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Το ραντεβού ακυρώθηκε.");
+        return "redirect:/owners/appointments";
+    }
+
+    // --- EDIT PROFILE (Εμφάνιση Φόρμας) ---
+    @GetMapping("/profile")
+    public String showProfileForm(@AuthenticationPrincipal UserDetails principal, Model model) {
+        User user = getAuthenticatedUser(principal);
+        model.addAttribute("user", user);
+        return "owners/profile-edit";
+    }
+
+    // --- EDIT PROFILE (Αποθήκευση) ---
+    @PostMapping("/profile")
+    public String updateProfile(
+        @AuthenticationPrincipal UserDetails principal,
+        @RequestParam("email") String email,
+        @RequestParam(value = "password", required = false) String password,
+        RedirectAttributes redirectAttributes
+    ) {
+        User user = getAuthenticatedUser(principal);
+        userService.updateUserProfile(user, email, password);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Το προφίλ ενημερώθηκε επιτυχώς!");
+        return "redirect:/owners/profile";
     }
 }

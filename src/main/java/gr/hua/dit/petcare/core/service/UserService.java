@@ -43,21 +43,32 @@ public class UserService {
         }
 
         if (user.getRole() == null) {
-            user.setRole(Role.OWNER); 
+            user.setRole(Role.OWNER);
         }
 
         User savedUser = userRepository.save(user);
         return savedUser.getId();
     }
 
+    @Transactional
+    public void updateUserProfile(User user, String newEmail, String newPassword) {
+        user.setEmail(newEmail);
+
+        if (newPassword != null && !newPassword.isBlank()) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+        }
+
+        userRepository.save(user);
+    }
+
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε: " + username));
+            .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε: " + username));
     }
-    
+
     public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε με ID: " + id));
+            .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε με ID: " + id));
     }
 
     public List<User> findAllUsersByRole(Role role) {
