@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,8 +27,7 @@ public class RestVaccineAdapter implements VaccinePort {
 
     @Override
     public List<String> getAvailableVaccines(String species) {
-        String url = "https://petcare-mock-service.com/api/vaccines?species=" + species;
-
+        String url = "http://localhost:8081/api/vaccines?species=" + species;
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-API-KEY", "petcare-secret-key-2024");
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -36,8 +36,9 @@ public class RestVaccineAdapter implements VaccinePort {
 
         try {
             logger.info("Κλήση External API (GET): {}", url);
-            restTemplate.exchange(url, HttpMethod.GET, entity, String[].class);
-            return Collections.emptyList();
+            ResponseEntity<String[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, String[].class);
+
+            return response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
 
         } catch (Exception e) {
             // Fallback Mock Data

@@ -151,15 +151,13 @@ public class OwnerController {
         return "redirect:/owners/appointments";
     }
 
-    // --- EDIT PROFILE (Εμφάνιση Φόρμας) ---
     @GetMapping("/profile")
     public String showProfileForm(@AuthenticationPrincipal UserDetails principal, Model model) {
         User user = getAuthenticatedUser(principal);
         model.addAttribute("user", user);
-        return "owners/profile-edit";
+        return "profile-edit";
     }
 
-    // --- EDIT PROFILE (Αποθήκευση) ---
     @PostMapping("/profile")
     public String updateProfile(
         @AuthenticationPrincipal UserDetails principal,
@@ -171,6 +169,6 @@ public class OwnerController {
         userService.updateUserProfile(user, email, password);
 
         redirectAttributes.addFlashAttribute("successMessage", "Το προφίλ ενημερώθηκε επιτυχώς!");
-        return "redirect:/owners/profile";
+        return "redirect:/profile";
     }
 }

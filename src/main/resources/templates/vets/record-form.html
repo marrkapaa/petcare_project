@@ -60,7 +60,18 @@
                         <label for="vaccinesGiven" class="form-label">Χορηγηση Εμβολιων</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="fas fa-syringe text-success"></i></span>
-                            <input type="text" id="vaccinesGiven" th:field="*{vaccinesGiven}" class="form-control" placeholder="π.χ. Rabies, DHPP (αφήστε κενό αν δεν έγινε)">
+
+                            <select id="vaccinesGiven" th:field="*{vaccinesGiven}" class="form-select">
+                                <option value="" selected>-- Επιλέξτε Εμβόλιο (Αν χορηγήθηκε) --</option>
+
+                                <option th:each="vac : ${vaccines}"
+                                        th:value="${vac}"
+                                        th:text="${vac}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-text text-muted small mt-1">
+                            <i class="fas fa-info-circle"></i> Η λίστα φορτώνεται δυναμικά από το External Vaccine Service (Integration).
                         </div>
                     </div>
 
